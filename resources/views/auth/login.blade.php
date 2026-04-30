@@ -3,17 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistem PBL</title>
+    <title>Sistem PBL - Login</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { background-color: #0f1624; font-family: 'Segoe UI', sans-serif; min-height: 100vh; display: flex; align-items: center; justify-content: center; }
-        .container { width: 100%; max-width: 480px; padding: 20px; text-align: center; }
+        .container { width: 100%; max-width: 440px; padding: 20px; text-align: center; }
         .logo { width: 64px; height: 64px; background: white; border-radius: 16px; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; font-size: 28px; }
         h1 { color: white; font-size: 2rem; font-weight: 700; margin-bottom: 8px; }
         .subtitle { color: #6dd5fa; font-size: 0.95rem; margin-bottom: 30px; }
-        .tabs { display: flex; background: #1a2332; border-radius: 50px; padding: 4px; margin-bottom: 24px; gap: 4px; }
-        .tab-btn { flex: 1; padding: 10px; border: none; border-radius: 50px; cursor: pointer; font-size: 0.95rem; font-weight: 500; transition: all 0.3s; background: transparent; color: #8a9bb0; display: flex; align-items: center; justify-content: center; gap: 8px; }
-        .tab-btn.active { background: white; color: #0f1624; font-weight: 600; }
         .card { background: #f0f2f5; border-radius: 16px; padding: 32px; text-align: left; }
         .card h2 { font-size: 1.4rem; font-weight: 700; color: #0f1624; margin-bottom: 6px; }
         .card p { color: #6b7a8d; font-size: 0.9rem; margin-bottom: 24px; }
@@ -23,8 +20,6 @@
         .form-group input:focus { box-shadow: 0 0 0 2px #4a9eff; }
         .btn-submit { width: 100%; padding: 14px; background: #0f1624; color: white; border: none; border-radius: 10px; font-size: 1rem; font-weight: 600; cursor: pointer; margin-top: 8px; transition: background 0.2s; }
         .btn-submit:hover { background: #1a2a3a; }
-        .tab-content { display: none; }
-        .tab-content.active { display: block; }
         .alert-danger { background: #fde8e8; color: #c0392b; padding: 10px 14px; border-radius: 8px; margin-bottom: 16px; font-size: 0.9rem; }
         .register-link { margin-top: 16px; text-align: center; font-size: 0.88rem; color: #6b7a8d; }
         .register-link a { color: #0f1624; font-weight: 600; text-decoration: none; }
@@ -40,100 +35,42 @@
     <h1>Sistem PBL</h1>
     <p class="subtitle">Manajemen Proyek Problem Based Learning</p>
 
-    <div class="tabs">
-        <button class="tab-btn" id="btn-mahasiswa" onclick="switchTab('mahasiswa', this)">
-            🎓 Mahasiswa
-        </button>
-        <button class="tab-btn" id="btn-dospem" onclick="switchTab('dospem', this)">
-            👤 Dosen Pembimbing
-        </button>
-    </div>
+    <div class="card">
+        <h2>Masuk ke Sistem</h2>
+        <p>Masukkan email dan password Anda</p>
 
-    {{-- Tab Mahasiswa --}}
-    <div class="tab-content" id="tab-mahasiswa">
-        <div class="card">
-            <h2>Login Mahasiswa</h2>
-            <p>Masuk untuk memilih dan mengerjakan proyek PBL</p>
+        @if($errors->any())
+        <div class="alert-danger">{{ $errors->first() }}</div>
+        @endif
 
-            @if(old('role_hint') == 'mahasiswa' && $errors->any())
-            <div class="alert-danger">{{ $errors->first() }}</div>
-            @endif
-
-            <form method="POST" action="{{ route('login') }}">
-                @csrf
-                <input type="hidden" name="role_hint" value="mahasiswa">
-                <div class="form-group">
-                    <label>Email</label>
-                    <input type="email" name="email" placeholder="Masukkan email"
-                        value="{{ old('role_hint') == 'mahasiswa' ? old('email') : '' }}"
-                        class="{{ old('role_hint') == 'mahasiswa' && $errors->has('email') ? 'is-invalid' : '' }}">
-                </div>
-                <div class="form-group">
-                    <label>Password</label>
-                    <input type="password" name="password" placeholder="Masukkan password">
-                </div>
-                <button type="submit" class="btn-submit">→ Masuk sebagai Mahasiswa</button>
-            </form>
-            <div class="register-link">
-                Belum punya akun? <a href="{{ route('register') }}">Daftar di sini</a>
+        <form method="POST" action="{{ route('login') }}">
+            @csrf
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" name="email" placeholder="Masukkan email"
+                    value="{{ old('email') }}"
+                    class="{{ $errors->has('email') ? 'is-invalid' : '' }}">
+                @error('email')
+                <span class="invalid-feedback">{{ $message }}</span>
+                @enderror
             </div>
-        </div>
-    </div>
-
-    {{-- Tab Dosen --}}
-    <div class="tab-content" id="tab-dospem">
-        <div class="card">
-            <h2>Login Dosen Pembimbing</h2>
-            <p>Masuk untuk mengelola dan memantau proyek PBL</p>
-
-            @if(old('role_hint') == 'dospem' && $errors->any())
-            <div class="alert-danger">{{ $errors->first() }}</div>
-            @endif
-
-            <form method="POST" action="{{ route('login') }}">
-                @csrf
-                <input type="hidden" name="role_hint" value="dospem">
-                <div class="form-group">
-                    <label>Email</label>
-                    <input type="email" name="email" placeholder="Masukkan email"
-                        value="{{ old('role_hint') == 'dospem' ? old('email') : '' }}"
-                        class="{{ old('role_hint') == 'dospem' && $errors->has('email') ? 'is-invalid' : '' }}">
-                </div>
-                <div class="form-group">
-                    <label>Password</label>
-                    <input type="password" name="password" placeholder="Masukkan password">
-                </div>
-                <button type="submit" class="btn-submit">→ Masuk sebagai Dosen</button>
-            </form>
-            <div class="register-link">
-                Belum punya akun? <a href="{{ route('register') }}">Daftar di sini</a>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" name="password" placeholder="Masukkan password"
+                    class="{{ $errors->has('password') ? 'is-invalid' : '' }}">
+                @error('password')
+                <span class="invalid-feedback">{{ $message }}</span>
+                @enderror
             </div>
+            <button type="submit" class="btn-submit">→ Masuk</button>
+        </form>
+        <div class="register-link">
+            Belum punya akun? <a href="{{ route('register') }}">Daftar di sini</a>
         </div>
     </div>
 </div>
 
 <div class="help-btn">?</div>
-
-<script>
-function switchTab(tab, btn) {
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-    document.getElementById('tab-' + tab).classList.add('active');
-    btn.classList.add('active');
-    // Simpan tab aktif
-    localStorage.setItem('activeTab', tab);
-}
-
-// Saat halaman load, cek tab mana yang aktif
-document.addEventListener('DOMContentLoaded', function() {
-    // Cek dari old input (setelah error)
-    var roleHint = "{{ old('role_hint') }}";
-    var activeTab = roleHint || localStorage.getItem('activeTab') || 'mahasiswa';
-    
-    document.getElementById('tab-' + activeTab).classList.add('active');
-    document.getElementById('btn-' + activeTab).classList.add('active');
-});
-</script>
 
 </body>
 </html>
