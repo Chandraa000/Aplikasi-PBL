@@ -10,7 +10,7 @@ class Project extends Model
     use HasFactory;
 
     protected $fillable = [
-        'nama_project', 'deskripsi', 'dospem_id', 'status'
+        'nama_project', 'deskripsi', 'dospem_id', 'status', 'semester_id'
     ];
 
     public function dospem()
@@ -31,5 +31,10 @@ class Project extends Model
     public function anggota()
     {
         return $this->hasMany(GroupAnggota::class);
+    }
+
+    public function semester()
+    {
+        return $this->belongsTo(Semester::class);
     }
 }
