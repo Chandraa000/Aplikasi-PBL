@@ -115,7 +115,13 @@
     </div>
 
     {{-- Tabel Semua Project --}}
-    <div class="section-title">📁 Semua Project</div>
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+        <div class="section-title" style="margin-bottom:0;">📁 Semua Project</div>
+        <a href="{{ route('projects.create') }}"
+            style="padding:9px 18px; background:#0f1624; color:white; border-radius:10px; font-size:0.88rem; font-weight:600; text-decoration:none;">
+        + Buat Project
+    </a>
+</div>
     <div class="proj-table">
         <table>
             <thead>
