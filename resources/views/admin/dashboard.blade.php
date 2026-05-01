@@ -57,6 +57,7 @@
         </div>
     </div>
     <div class="topbar-nav">
+        <a href="{{ route('admin.semester.index') }}" class="nav-btn nav-inactive">📅 Semester</a>
         <a href="{{ route('admin.dashboard') }}" class="nav-btn nav-btn-active">📊 Dashboard</a>
         <a href="{{ route('admin.users') }}" class="nav-btn nav-btn-inactive">👥 Kelola User</a>
     </div>
