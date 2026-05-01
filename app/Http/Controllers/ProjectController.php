@@ -19,34 +19,33 @@ class ProjectController extends Controller
 
     public function create()
     {
-        return view('projects.create');
+        if (auth()->user()->role !== 'admin') {
+            return redirect()->route('dashboard')->with('error', 'Hanya admin yang bisa membuat project!');
+        }
+        $dospems = User::where('role', 'dospem')->get();
+        return view('projects.create', compact('dospems'));
     }
 
     public function store(Request $request)
     {
+        if (auth()->user()->role !== 'admin') {
+            return redirect()->back()->with('error', 'Hanya admin yang bisa membuat project!');
+        }
+
         $request->validate([
             'nama_project' => 'required',
             'deskripsi'    => 'nullable',
-            'nama_dospem'  => 'required',
+            'dospem_id'    => 'required|exists:users,id',
         ]);
-
-        $dospem = User::firstOrCreate(
-            ['email' => str()->slug($request->nama_dospem) . '@dospem.com'],
-            [
-                'name'     => $request->nama_dospem,
-                'password' => bcrypt('password123'),
-                'role'     => 'dospem',
-            ]
-        );
 
         Project::create([
             'nama_project' => $request->nama_project,
             'deskripsi'    => $request->deskripsi,
-            'dospem_id'    => $dospem->id,
+            'dospem_id'    => $request->dospem_id,
             'status'       => 'aktif',
         ]);
 
-        return redirect()->route('projects.index')->with('success', 'Project berhasil dibuat!');
+        return redirect()->route('admin.dashboard')->with('success', 'Project berhasil dibuat!');
     }
 
     public function show(Project $project)
@@ -122,25 +121,29 @@ class ProjectController extends Controller
 
     public function edit(Project $project)
     {
-        return view('projects.edit', compact('project'));
+        if (auth()->user()->role !== 'admin') {
+            return redirect()->back()->with('error', 'Hanya admin yang bisa mengedit project!');
+        }
+        $dospems = User::where('role', 'dospem')->get();
+        return view('projects.edit', compact('project', 'dospems'));
     }
 
     public function update(Request $request, Project $project)
     {
-        if ($project->dospem_id != auth()->id()) {
-            return redirect()->back()->with('error', 'Anda tidak berhak mengedit project ini!');
+        if (auth()->user()->role !== 'admin') {
+            return redirect()->back()->with('error', 'Hanya admin yang bisa mengedit project!');
         }
         $request->validate(['nama_project' => 'required']);
-        $project->update($request->only('nama_project', 'deskripsi', 'status'));
-        return redirect()->route('projects.index')->with('success', 'Project berhasil diupdate!');
+        $project->update($request->only('nama_project', 'deskripsi', 'status', 'dospem_id'));
+        return redirect()->route('admin.dashboard')->with('success', 'Project berhasil diupdate!');
     }
 
     public function destroy(Project $project)
     {
-        if ($project->dospem_id != auth()->id()) {
-            return redirect()->back()->with('error', 'Anda tidak berhak menghapus project ini!');
+        if (auth()->user()->role !== 'admin') {
+            return redirect()->back()->with('error', 'Hanya admin yang bisa menghapus project!');
         }
         $project->delete();
-        return redirect()->route('projects.index')->with('success', 'Project berhasil dihapus!');
+        return redirect()->route('admin.dashboard')->with('success', 'Project berhasil dihapus!');
     }
 }
