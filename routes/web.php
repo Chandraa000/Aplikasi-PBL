@@ -6,6 +6,7 @@ use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\GroupController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\SemesterController;
 
 // Admin routes
 Route::middleware(['auth'])->prefix('admin')->group(function () {
@@ -15,6 +16,14 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
     Route::put('/users/{user}', [AdminController::class, 'updateUser'])->name('admin.users.update');
     Route::delete('/users/{user}', [AdminController::class, 'destroyUser'])->name('admin.users.destroy');
     Route::delete('/projects/{project}', [AdminController::class, 'destroyProject'])->name('admin.projects.destroy');
+    Route::resource('semesters', SemesterController::class);
+    
+    // Semester
+    Route::get('/semester', [SemesterController::class, 'index'])->name('admin.semester.index');
+    Route::post('/semester', [SemesterController::class, 'store'])->name('admin.semester.store');
+    Route::get('/semester/{semester}', [SemesterController::class, 'show'])->name('admin.semester.show');
+    Route::post('/semester/{semester}/aktif', [SemesterController::class, 'setAktif'])->name('admin.semester.aktif');
+    Route::delete('/semester/{semester}', [SemesterController::class, 'destroy'])->name('admin.semester.destroy');
 });
 
 Route::get('/', function () {   
