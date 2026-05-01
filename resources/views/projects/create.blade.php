@@ -71,6 +71,18 @@
             </div>
 
             <div class="form-group">
+                 <label>Semester</label>
+                 <select name="semester_id" style="width:100%; padding:12px 16px; border:1.5px solid #e0e0e0; border-radius:10px; font-size:0.95rem; outline:none; background:white;">
+                    <option value="">-- Pilih Semester --</option>
+                     @foreach($semesters as $semester)
+                    <option value="{{ $semester->id }}" {{ old('semester_id') == $semester->id ? 'selected' : '' }}>
+                        {{ $semester->nama }} {{ $semester->is_aktif ? '(Aktif)' : '' }}
+                    </option>
+                    @endforeach
+                </select>
+            </div>
+
+            <div class="form-group">
                 <label>Deskripsi Project</label>
                 <textarea name="deskripsi" rows="4"
                     placeholder="Jelaskan tujuan dan deskripsi project...">{{ old('deskripsi') }}</textarea>
