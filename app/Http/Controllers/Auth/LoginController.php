@@ -25,28 +25,7 @@ class LoginController extends Controller
             'password' => 'required',
         ]);
 
-        $roleHint = $request->input('role_hint', 'mahasiswa');
-
-        $credentials = $request->only('email', 'password');
-
-        if (Auth::attempt($credentials)) {
-            $user = Auth::user();
-
-            // Cek role sesuai tab yang dipilih
-            if ($roleHint == 'dospem' && $user->role !== 'dospem') {
-                Auth::logout();
-                return back()->withErrors([
-                    'email' => 'Akun ini bukan Dosen Pembimbing.',
-                ])->withInput();
-            }
-
-            if ($roleHint == 'mahasiswa' && $user->role !== 'mahasiswa') {
-                Auth::logout();
-                return back()->withErrors([
-                    'email' => 'Akun ini bukan Mahasiswa.',
-                ])->withInput();
-            }
-
+        if (Auth::attempt($request->only('email', 'password'))) {
             $request->session()->regenerate();
             return redirect('/dashboard');
         }
