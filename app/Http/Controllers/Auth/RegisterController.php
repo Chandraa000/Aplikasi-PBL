@@ -45,28 +45,25 @@ class RegisterController extends Controller
      *
      * @return \Illuminate\Contracts\Validation\Validator
      */
-    protected function create(array $data)
-    {
-        return User::create([
-        'name'     => $data['name'],
-        'email'    => $data['email'],
-        'password' => Hash::make($data['password']),
-        'role'     => $data['role'] ?? 'mahasiswa',
-        ]);
-    }
-
-    /**
-     * Create a new user instance after a valid registration.
-     *
-     * @return User
-     */
     protected function validator(array $data)
     {
-        return Validator::make($data, [
+    return Validator::make($data, [
         'name'     => ['required', 'string', 'max:255'],
+        'nim'      => ['required', 'string', 'max:50'],
         'email'    => ['required', 'string', 'email', 'max:255', 'unique:users'],
         'password' => ['required', 'string', 'min:8', 'confirmed'],
-        'role'     => ['required', 'in:mahasiswa,dospem'],
-        ]);
+    ]);
     }
-}
+
+    protected function create(array $data)
+    {
+    return User::create([
+        'name'     => $data['name'],
+        'nim'      => $data['nim'],
+        'email'    => $data['email'],
+        'password' => Hash::make($data['password']),
+        'role'     => 'mahasiswa',
+    ]);
+
+    }
+}    
