@@ -67,6 +67,7 @@
     <div class="topbar-nav">
         <a href="{{ route('admin.dashboard') }}" class="nav-btn nav-btn-inactive">📊 Dashboard</a>
         <a href="{{ route('admin.users') }}" class="nav-btn nav-btn-active">👥 Kelola User</a>
+        <a href="{{ route('admin.semester.index') }}" class="nav-btn nav-inactive">📅 Semester</a>
     </div>
     <a href="{{ route('logout') }}" class="btn-logout"
         onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
