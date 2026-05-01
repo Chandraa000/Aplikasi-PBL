@@ -14,6 +14,10 @@ class DashboardController extends Controller
             'members'
         ])->latest()->get();
 
+        if (auth()->user()->role == 'admin') {
+            return redirect()->route('admin.dashboard');
+        }
+
         if (auth()->user()->role == 'dospem') {
             return view('dashboard_dospem', compact('projects'));
         }
