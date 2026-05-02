@@ -1,100 +1,55 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kelola User</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Segoe UI', sans-serif; background: #f5f6fa; }
-        .topbar { background: #0f1624; color: white; padding: 18px 32px; display: flex; align-items: center; justify-content: space-between; }
-        .topbar-left { display: flex; align-items: center; gap: 12px; }
-        .topbar-left h1 { font-size: 1.3rem; font-weight: 700; }
-        .topbar-left p { font-size: 0.85rem; color: #8a9bb0; }
-        .topbar-nav { display: flex; gap: 8px; }
-        .nav-btn { padding: 8px 16px; border-radius: 8px; font-size: 0.88rem; font-weight: 600; text-decoration: none; transition: all 0.2s; }
-        .nav-btn-active { background: white; color: #0f1624; }
-        .nav-btn-inactive { background: transparent; color: #8a9bb0; border: 1px solid #2a3a4a; }
-        .nav-btn-inactive:hover { background: #1a2a3a; color: white; }
-        .btn-logout { background: transparent; border: 2px solid white; color: white; padding: 8px 18px; border-radius: 8px; font-size: 0.9rem; text-decoration: none; }
-        .btn-logout:hover { background: white; color: #0f1624; }
-        .content { padding: 32px; display: grid; grid-template-columns: 340px 1fr; gap: 24px; }
-        .card { background: white; border-radius: 16px; padding: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
-        .card h3 { font-size: 1rem; font-weight: 700; color: #0f1624; margin-bottom: 20px; }
-        .form-group { margin-bottom: 16px; }
-        .form-group label { display: block; font-size: 0.85rem; font-weight: 600; color: #0f1624; margin-bottom: 6px; }
-        .form-group input, .form-group select { width: 100%; padding: 10px 14px; border: 1.5px solid #e0e0e0; border-radius: 10px; font-size: 0.9rem; outline: none; }
-        .form-group input:focus, .form-group select:focus { border-color: #0f1624; }
-        .form-group .hint { font-size: 0.78rem; color: #b0bec5; margin-top: 4px; }
-        .btn-submit { width: 100%; padding: 12px; background: #0f1624; color: white; border: none; border-radius: 10px; font-size: 0.9rem; font-weight: 600; cursor: pointer; }
-        .btn-submit:hover { background: #1a2a3a; }
-        .alert-success { background: #e8f5e9; color: #2e7d32; padding: 12px 16px; border-radius: 10px; margin-bottom: 16px; font-size: 0.88rem; }
-        .alert-error { background: #fce4ec; color: #c62828; padding: 12px 16px; border-radius: 10px; margin-bottom: 16px; font-size: 0.88rem; }
-        .search-bar { display: flex; gap: 12px; margin-bottom: 16px; }
-        .search-bar input { flex: 1; padding: 10px 14px; border: 1.5px solid #e0e0e0; border-radius: 10px; font-size: 0.9rem; outline: none; }
-        .search-bar select { padding: 10px 14px; border: 1.5px solid #e0e0e0; border-radius: 10px; font-size: 0.9rem; outline: none; background: white; }
-        table { width: 100%; border-collapse: collapse; }
-        th { background: #f8f9fb; padding: 12px 14px; text-align: left; font-size: 0.8rem; font-weight: 700; color: #6b7a8d; border-bottom: 1.5px solid #f0f2f5; }
-        td { padding: 12px 14px; font-size: 0.85rem; color: #0f1624; border-bottom: 1px solid #f5f6fa; vertical-align: middle; }
-        tr:last-child td { border-bottom: none; }
-        tr:hover td { background: #f8f9fb; }
-        .badge { padding: 3px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
-        .badge-mahasiswa { background: #e3f2fd; color: #1565c0; }
-        .badge-dospem { background: #fff3e0; color: #e65100; }
-        .btn-edit { padding: 5px 10px; background: #fff3e0; color: #e65100; border: none; border-radius: 7px; font-size: 0.75rem; font-weight: 600; cursor: pointer; margin-right: 4px; }
-        .btn-del { padding: 5px 10px; background: #fce4ec; color: #c62828; border: none; border-radius: 7px; font-size: 0.75rem; font-weight: 600; cursor: pointer; }
-        .avatar { width: 32px; height: 32px; background: #0f1624; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.78rem; font-weight: 700; }
+@extends('admin.layout')
 
-        /* Modal Edit */
-        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 100; align-items: center; justify-content: center; }
-        .modal-overlay.active { display: flex; }
-        .modal { background: white; border-radius: 16px; padding: 28px; width: 100%; max-width: 440px; }
-        .modal h3 { font-size: 1rem; font-weight: 700; margin-bottom: 20px; }
-        .modal-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 16px; }
-        .btn-cancel { padding: 11px; background: white; border: 1.5px solid #e0e0e0; border-radius: 10px; font-size: 0.9rem; font-weight: 600; cursor: pointer; color: #0f1624; }
-    </style>
-</head>
-<body>
+@section('title', 'Kelola User')
+@section('page_title', 'Kelola User')
+@section('page_sub', 'Tambah, edit, dan hapus user sistem')
 
-<div class="topbar">
-    <div class="topbar-left">
-        <div style="font-size:1.5rem;">⚙️</div>
-        <div>
-            <h1>Admin Dashboard</h1>
-            <p>Kelola User Sistem</p>
-        </div>
-    </div>
-    <div class="topbar-nav">
-        <a href="{{ route('admin.dashboard') }}" class="nav-btn nav-btn-inactive">📊 Dashboard</a>
-        <a href="{{ route('admin.users') }}" class="nav-btn nav-btn-active">👥 Kelola User</a>
-        <a href="{{ route('admin.semester.index') }}" class="nav-btn nav-inactive">📅 Semester</a>
-    </div>
-    <a href="{{ route('logout') }}" class="btn-logout"
-        onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-        ↪ Keluar
-    </a>
-    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display:none;">@csrf</form>
-</div>
+@section('content')
+<style>
+    .two-col { display: grid; grid-template-columns: 340px 1fr; gap: 24px; }
+    .card { background: white; border-radius: 14px; padding: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+    .card h3 { font-size: 1rem; font-weight: 700; color: #0f1624; margin-bottom: 20px; }
+    .form-group { margin-bottom: 16px; }
+    .form-group label { display: block; font-size: 0.85rem; font-weight: 600; color: #0f1624; margin-bottom: 6px; }
+    .form-group input, .form-group select { width: 100%; padding: 10px 14px; border: 1.5px solid #e0e0e0; border-radius: 10px; font-size: 0.9rem; outline: none; background: white; transition: border-color 0.2s; }
+    .form-group input:focus, .form-group select:focus { border-color: #0f1624; }
+    .form-group .hint { font-size: 0.78rem; color: #b0bec5; margin-top: 4px; }
+    .btn-submit { width: 100%; padding: 12px; background: #0f1624; color: white; border: none; border-radius: 10px; font-size: 0.9rem; font-weight: 600; cursor: pointer; }
+    .btn-submit:hover { background: #1a2a3a; }
+    .search-bar { display: flex; gap: 12px; margin-bottom: 16px; }
+    .search-bar input { flex: 1; padding: 10px 14px; border: 1.5px solid #e0e0e0; border-radius: 10px; font-size: 0.9rem; outline: none; }
+    .search-bar select { padding: 10px 14px; border: 1.5px solid #e0e0e0; border-radius: 10px; font-size: 0.9rem; outline: none; background: white; }
+    table { width: 100%; border-collapse: collapse; }
+    th { background: #f8f9fb; padding: 12px 14px; text-align: left; font-size: 0.8rem; font-weight: 700; color: #6b7a8d; border-bottom: 1.5px solid #f0f2f5; }
+    td { padding: 12px 14px; font-size: 0.85rem; color: #0f1624; border-bottom: 1px solid #f5f6fa; vertical-align: middle; }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: #f8f9fb; }
+    .badge-mahasiswa { background: #e3f2fd; color: #1565c0; padding: 3px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
+    .badge-dospem { background: #fff3e0; color: #e65100; padding: 3px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
+    .btn-edit { padding: 5px 10px; background: #fff3e0; color: #e65100; border: none; border-radius: 7px; font-size: 0.75rem; font-weight: 600; cursor: pointer; margin-right: 4px; }
+    .btn-del { padding: 5px 10px; background: #fce4ec; color: #c62828; border: none; border-radius: 7px; font-size: 0.75rem; font-weight: 600; cursor: pointer; }
+    .avatar { width: 32px; height: 32px; background: #0f1624; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.78rem; font-weight: 700; }
+    .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 200; align-items: center; justify-content: center; }
+    .modal-overlay.active { display: flex; }
+    .modal { background: white; border-radius: 16px; padding: 28px; width: 100%; max-width: 440px; }
+    .modal h3 { font-size: 1rem; font-weight: 700; margin-bottom: 20px; }
+    .modal-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 16px; }
+    .btn-cancel { padding: 11px; background: white; border: 1.5px solid #e0e0e0; border-radius: 10px; font-size: 0.9rem; font-weight: 600; cursor: pointer; color: #0f1624; }
+</style>
 
-<div class="content">
-
-    {{-- Form Tambah User --}}
+<div class="two-col">
     <div>
         <div class="card">
             <h3>➕ Tambah User Baru</h3>
-
-            @if(session('success'))
-            <div class="alert-success">✅ {{ session('success') }}</div>
-            @endif
-            @if(session('error'))
-            <div class="alert-error">❌ {{ session('error') }}</div>
-            @endif
-
             <form action="{{ route('admin.users.store') }}" method="POST">
                 @csrf
                 <div class="form-group">
                     <label>Nama Lengkap *</label>
                     <input type="text" name="name" placeholder="Masukkan nama" value="{{ old('name') }}" required>
+                </div>
+                <div class="form-group">
+                    <label>NIM / NIP</label>
+                    <input type="text" name="nim" placeholder="NIM untuk mahasiswa" value="{{ old('nim') }}">
                 </div>
                 <div class="form-group">
                     <label>Email *</label>
@@ -117,11 +72,9 @@
         </div>
     </div>
 
-    {{-- Tabel User --}}
     <div>
         <div class="card">
             <h3>👥 Daftar User ({{ $users->count() }})</h3>
-
             <div class="search-bar">
                 <input type="text" id="searchUser" placeholder="🔍 Cari nama atau email..." onkeyup="filterUser()">
                 <select id="filterRole" onchange="filterUser()">
@@ -130,7 +83,6 @@
                     <option value="dospem">Dospem</option>
                 </select>
             </div>
-
             <table>
                 <thead>
                     <tr>
@@ -154,25 +106,17 @@
                         </td>
                         <td style="color:#6b7a8d;">{{ $user->email }}</td>
                         <td style="color:#6b7a8d;">{{ $user->nim ?? '-' }}</td>
+                        <td><span class="badge-{{ $user->role }}">{{ $user->role == 'mahasiswa' ? 'Mahasiswa' : 'Dospem' }}</span></td>
                         <td>
-                            <span class="badge badge-{{ $user->role }}">
-                                {{ $user->role == 'mahasiswa' ? 'Mahasiswa' : 'Dospem' }}
-                            </span>
-                        </td>
-                        <td>
-                            <button class="btn-edit" onclick="openEdit({{ $user->id }}, '{{ $user->name }}', '{{ $user->email }}', '{{ $user->role }}')">
-                                ✏️ Edit
-                            </button>
+                            <button class="btn-edit" onclick="openEdit({{ $user->id }}, '{{ $user->name }}', '{{ $user->email }}', '{{ $user->role }}', '{{ $user->nim }}')">✏️ Edit</button>
                             <form action="{{ route('admin.users.destroy', $user->id) }}" method="POST" style="display:inline;">
                                 @csrf @method('DELETE')
-                                <button type="submit" class="btn-del" onclick="return confirm('Yakin hapus user {{ $user->name }}?')">
-                                    🗑 Hapus
-                                </button>
+                                <button type="submit" class="btn-del" onclick="return confirm('Yakin hapus user {{ $user->name }}?')">🗑 Hapus</button>
                             </form>
                         </td>
                     </tr>
                     @empty
-                    <tr><td colspan="5" style="text-align:center; color:#b0bec5; padding:30px;">Belum ada user</td></tr>
+                    <tr><td colspan="6" style="text-align:center; color:#b0bec5; padding:30px;">Belum ada user</td></tr>
                     @endforelse
                 </tbody>
             </table>
@@ -180,7 +124,7 @@
     </div>
 </div>
 
-{{-- Modal Edit User --}}
+{{-- Modal Edit --}}
 <div class="modal-overlay" id="modalEdit">
     <div class="modal">
         <h3>✏️ Edit User</h3>
@@ -189,6 +133,10 @@
             <div class="form-group">
                 <label>Nama Lengkap *</label>
                 <input type="text" id="editName" name="name" required>
+            </div>
+            <div class="form-group">
+                <label>NIM / NIP</label>
+                <input type="text" id="editNim" name="nim" placeholder="NIM untuk mahasiswa">
             </div>
             <div class="form-group">
                 <label>Email *</label>
@@ -215,18 +163,17 @@
 </div>
 
 <script>
-function openEdit(id, name, email, role) {
+function openEdit(id, name, email, role, nim) {
     document.getElementById('editName').value = name;
     document.getElementById('editEmail').value = email;
     document.getElementById('editRole').value = role;
+    document.getElementById('editNim').value = nim || '';
     document.getElementById('editForm').action = '/admin/users/' + id;
     document.getElementById('modalEdit').classList.add('active');
 }
-
 document.getElementById('modalEdit').addEventListener('click', function(e) {
     if (e.target === this) this.classList.remove('active');
 });
-
 function filterUser() {
     var search = document.getElementById('searchUser').value.toLowerCase();
     var role = document.getElementById('filterRole').value;
@@ -240,6 +187,4 @@ function filterUser() {
     });
 }
 </script>
-
-</body>
-</html>
+@endsection
