@@ -39,9 +39,13 @@ class SemesterController extends Controller
 
     public function show(Semester $semester)
     {
-        $semester->load(['projects.dospem', 'projects.groups.tasks', 'projects.members']);
-        return view('admin.semester.show', compact('semester'));
-    }
+    $semester->load([
+        'projects.dospem',
+        'projects.groups.tasks',
+        'projects.members'
+    ]);
+    return view('admin.semester.show', compact('semester'));
+    }     
 
     public function setAktif(Semester $semester)
     {
