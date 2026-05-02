@@ -63,11 +63,14 @@
     <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display:none;">@csrf</form>
 </div>
 
-<div class="content">
-    <div class="mhs-header">
-        <h2>Pilih Proyek PBL</h2>
-        <p>Pilih template proyek yang ingin Anda kerjakan</p>
-    </div>
+<div class="mhs-header">
+    <h2>Pilih Proyek PBL</h2>
+    @if(isset($semesterAktif) && $semesterAktif)
+    <p>{{ $semesterAktif->nama }} &nbsp;·&nbsp; Pilih proyek yang ingin Anda kerjakan</p>
+    @else
+    <p>Belum ada semester aktif. Hubungi admin.</p>
+    @endif
+</div>
 
     <div class="search-bar">
         <input type="text" id="searchInput" placeholder="🔍 Cari proyek..." onkeyup="filterProjects()">
