@@ -136,10 +136,6 @@
             class="nav-item {{ request()->routeIs('admin.semester.*') ? 'active' : '' }}">
             <span class="nav-icon">📅</span> Semester
         </a>
-        <a href="{{ route('projects.create') }}"
-            class="nav-item {{ request()->routeIs('projects.create') ? 'active' : '' }}">
-            <span class="nav-icon">➕</span> Buat Project
-        </a>
     </nav>
 
     <div class="sidebar-footer">
