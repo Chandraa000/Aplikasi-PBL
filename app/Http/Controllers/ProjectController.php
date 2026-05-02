@@ -18,12 +18,14 @@ class ProjectController extends Controller
     }
 
     public function create()
-    {
-        if (auth()->user()->role !== 'admin') {
-            return redirect()->route('dashboard')->with('error', 'Hanya admin yang bisa membuat project!');
-        }
+{
+    if (auth()->user()->role !== 'admin') {
+        return redirect()->route('dashboard')->with('error', 'Hanya admin yang bisa membuat project!');
+    }
         $dospems = User::where('role', 'dospem')->get();
-        return view('projects.create', compact('dospems'));
+        $semesters = \App\Models\Semester::latest()->get();
+        $semesterAktif = \App\Models\Semester::where('is_aktif', true)->first();
+        return view('projects.create', compact('dospems', 'semesters', 'semesterAktif'));
     }
 
     public function store(Request $request)
@@ -146,4 +148,4 @@ class ProjectController extends Controller
         $project->delete();
         return redirect()->route('admin.dashboard')->with('success', 'Project berhasil dihapus!');
     }
-}
+}   
