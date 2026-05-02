@@ -88,6 +88,19 @@
 
     {{-- Toolbar --}}
     <div class="toolbar">
+        @if(isset($semesterAktif) && $semesterAktif)
+<div style="background:#e8f5e9; border-radius:12px; padding:14px 20px; margin-bottom:20px; display:flex; align-items:center; gap:10px;">
+    <span style="font-size:1.2rem;">📅</span>
+    <div>
+        <div style="font-size:0.88rem; font-weight:700; color:#2e7d32;">Semester Aktif: {{ $semesterAktif->nama }}</div>
+        <div style="font-size:0.78rem; color:#4caf50;">Menampilkan proyek semester ini saja</div>
+    </div>
+</div>
+@else
+<div style="background:#fce4ec; border-radius:12px; padding:14px 20px; margin-bottom:20px;">
+    <span style="font-size:0.88rem; color:#c62828;">⚠️ Belum ada semester aktif. Silakan atur di admin panel.</span>
+</div>
+@endif
         <div class="search-wrap">
             <input type="text" id="searchInput" placeholder="🔍 Cari proyek..." onkeyup="filterProjects()">
             <select id="filterStatus" onchange="filterProjects()">
