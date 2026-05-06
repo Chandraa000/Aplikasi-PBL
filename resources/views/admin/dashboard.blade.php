@@ -74,7 +74,6 @@
 
 <div class="section-header">
     <div class="section-title">📁 Semua Project</div>
-    <a href="{{ route('projects.create') }}" class="btn-add">+ Buat Project</a>
 </div>
 <div class="proj-table">
     <table>
