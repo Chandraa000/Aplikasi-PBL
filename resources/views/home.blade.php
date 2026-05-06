@@ -112,8 +112,7 @@
                 </div>
             </div>
             <div class="proj-actions">
-                <a href="{{ route('projects.show', $project->id) }}" class="btn-lihat">Lihat Detail</a>
-                <a href="{{ route('projects.joinForm', $project->id) }}" class="btn-pilih">Pilih Proyek Ini</a>
+                <a href="{{ route('projects.show', $project->id) }}" class="btn-pilih">Lihat Detail</a>
             </div>
         </div>
         @empty
