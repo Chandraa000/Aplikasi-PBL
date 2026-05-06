@@ -39,6 +39,8 @@ Route::get('/home', function() {
 Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
+    Route::get('projects/riwayat', [ProjectController::class, 'riwayat'])->name('projects.riwayat');
+
     // Project
     Route::resource('projects', ProjectController::class);
     Route::post('projects/{project}/join', [ProjectController::class, 'join'])->name('projects.join');
@@ -59,4 +61,7 @@ Route::delete('projects/{project}/members/{user}', [ProjectController::class, 'r
     Route::patch('tasks/{task}/status', [TaskController::class, 'updateStatus'])->name('tasks.updateStatus');
 
     Route::get('projects/{project}/join', [ProjectController::class, 'joinForm'])->name('projects.joinForm');
+    
+    Route::delete('projects/{project}/anggota/{anggota}', [ProjectController::class, 'removeAnggota'])->name('projects.removeAnggota');
+
 });
