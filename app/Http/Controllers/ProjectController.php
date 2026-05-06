@@ -30,24 +30,32 @@ class ProjectController extends Controller
 
     public function store(Request $request)
     {
-        if (auth()->user()->role !== 'admin') {
-            return redirect()->back()->with('error', 'Hanya admin yang bisa membuat project!');
-        }
+    if (auth()->user()->role !== 'admin') {
+        return redirect()->back()->with('error', 'Hanya admin yang bisa membuat project!');
+    }
 
-        $request->validate([
-            'nama_project' => 'required',
-            'deskripsi'    => 'nullable',
-            'dospem_id'    => 'required|exists:users,id',
-        ]);
+    $request->validate([
+        'nama_project' => 'required',
+        'deskripsi'    => 'nullable',
+        'dospem_id'    => 'required|exists:users,id',
+        'semester_id'  => 'nullable|exists:semesters,id',
+    ]);
 
-        Project::create([
-            'nama_project' => $request->nama_project,
-            'deskripsi'    => $request->deskripsi,
-            'dospem_id'    => $request->dospem_id,
-            'status'       => 'aktif',
-        ]);
+    Project::create([
+        'nama_project' => $request->nama_project,
+        'deskripsi'    => $request->deskripsi,
+        'dospem_id'    => $request->dospem_id,
+        'semester_id'  => $request->semester_id,
+        'status'       => 'aktif',
+    ]);
 
-        return redirect()->route('admin.dashboard')->with('success', 'Project berhasil dibuat!');
+    // Redirect ke semester jika ada semester_id
+    if ($request->semester_id) {
+        return redirect()->route('admin.semester.show', $request->semester_id)
+            ->with('success', 'Project berhasil ditambahkan ke semester!');
+    }
+
+    return redirect()->route('admin.dashboard')->with('success', 'Project berhasil dibuat!');
     }
 
     public function show(Project $project)
@@ -148,4 +156,42 @@ class ProjectController extends Controller
         $project->delete();
         return redirect()->route('admin.dashboard')->with('success', 'Project berhasil dihapus!');
     }
+
+    public function removeAnggota(Project $project, \App\Models\GroupAnggota $anggota)
+{
+    if (auth()->user()->role !== 'dospem') {
+        return redirect()->back()->with('error', 'Hanya dospem yang bisa menghapus anggota!');
+    }
+
+    // Hapus dari group_anggota
+    $anggota->delete();
+
+    // Hapus dari project_members jika ada akun
+    $user = \App\Models\User::where('nim', $anggota->nim)->first();
+    if ($user) {
+        ProjectMember::where('project_id', $project->id)
+            ->where('user_id', $user->id)
+            ->delete();
+        
+        // Hapus dari group_members juga
+        \App\Models\GroupMember::where('group_id', $anggota->group_id)
+            ->where('user_id', $user->id)
+            ->delete();
+    }
+
+    return redirect()->back()->with('success', $anggota->nama . ' berhasil dihapus dari proyek!');
+}
+
+public function riwayat()
+{
+    $semesters = \App\Models\Semester::with([
+        'projects' => function($q) {
+            $q->where('dospem_id', auth()->id())
+              ->with(['groups.tasks', 'members', 'anggota']);
+        }
+    ])->latest()->get();
+
+    return view('projects.riwayat', compact('semesters'));
+}
+
 }   
