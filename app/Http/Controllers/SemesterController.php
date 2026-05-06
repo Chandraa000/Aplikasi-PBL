@@ -37,14 +37,15 @@ class SemesterController extends Controller
         return redirect()->back()->with('success', 'Semester berhasil ditambahkan!');
     }
 
-    public function show(Semester $semester)
+   public function show(Semester $semester)
     {
     $semester->load([
         'projects.dospem',
         'projects.groups.tasks',
         'projects.members'
     ]);
-    return view('admin.semester.show', compact('semester'));
+    $dospems = \App\Models\User::where('role', 'dospem')->get();
+    return view('admin.semester.show', compact('semester', 'dospems'));
     }     
 
     public function setAktif(Semester $semester)
